@@ -1,5 +1,5 @@
 Package: helloworld
-Version: 0.2
-Maintainer: King Foo
+Version: 0.3
+Maintainer: Bruno Bronosky
 Architecture: all
-Description: hello world
+Description: A friendly helper

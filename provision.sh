@@ -14,8 +14,7 @@ create_basic_configuration(){
 create_installation_customization_demo(){
 	files_path="$(pwd)/stage2/03-custom-installations/files"
 	mkdir -p $files_path
-	cd $(dirname "$0")
-	script_path="$(pwd)"
+	cd $script_path
 	dpkg-deb --build helloworld
 	cd - > /dev/null
 	mv $script_path/helloworld.deb $files_path/
@@ -38,7 +37,37 @@ alias ll='ls -la'
 EOF
 }
 
-install_dependencies
-customize_user_environment
-prepare_upstream_source
-create_installation_customization_demo
+provision(){
+	install_dependencies
+	prepare_upstream_source
+	create_installation_customization_demo
+
+}
+
+provision_vagrant(){
+	provision
+	customize_user_environment
+}
+
+is_being_sourced(){
+	[[ "${BASH_SOURCE[0]}" != "${0}" ]]
+}
+
+script_path(){
+	if is_being_sourced; then
+		echo $(pwd)
+	else
+		cd $(dirname "$0")
+		echo $(pwd)
+		cd - > /dev/null
+	fi
+}
+
+script_path=$(script_path)
+
+if is_being_sourced; then
+	echo "Script ${BASH_SOURCE[0]} is being sourced. Functions defined but not called."
+	echo 'Try calling `provision`, and then './build.sh' in the pi-gen directory.'
+else
+	provision_vagrant
+fi
