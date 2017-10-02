@@ -12,13 +12,16 @@ create_basic_configuration(){
 }
 
 create_installation_customization_demo(){
-	files_path="$(pwd)/stage2/03-custom-installations/files"
-	mkdir -p $files_path
-	cd $script_path
+	substage_name='custom-installations'
+    substage_number="$(ls -d stage2/[0-9][0-9]-* | gawk -F '-' '{gsub(".*/",""); if($1>n) n=$1} END {printf("%02d", n+1)}')"
+
+	files_path="$(pwd)/stage2/${substage_number}-${substage_name}/files"
+	mkdir -p "$files_path"
+	cd "$script_path"
 	dpkg-deb --build helloworld
 	cd - > /dev/null
-	mv $script_path/helloworld.deb $files_path/
-	cp $script_path/00-run.sh $(dirname $files_path)/
+	mv "$script_path/"helloworld.deb "$files_path/"
+	cp "$script_path/"[0-9][0-9]-* "$(dirname $files_path)/"
 }
 
 prepare_upstream_source(){
